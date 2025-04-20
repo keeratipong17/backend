@@ -1,4 +1,7 @@
 const express = require('express');
+const cors = require('cors');
+const userRoutes = require('./routes/user.route');
+const kinkunRoutes = require('./routes/kinkun.route');
 require('dotenv').config();
 
 //สร้าง Web server ด้วย express
@@ -12,12 +15,12 @@ app.use(cors()); //ใช้ cors เพื่อให้สามารถเ�
 app.use(express.json());
 
 //บอก webser ว่าจะใช้ URL ที่มี Prefix อะไรบ้างที่จะเรียอกใช้งาน API ต่างๆ 
-app.use('/user',require('./routes/user'))
-app.use('/kinkun',require('./routes/kinkun'))
+app.use('/user', userRoutes);
+app.use('/kinkun', kinkunRoutes);
 
 // บอก webserver ในการใช้งานไฟล์ในโฟเดอร์ images
-app.use('/images/user',require('./images/user'))
-app.use('/images/kinkun',require('./images/kinkun'))
+app.use('/images/user', express.static('./images/user'));
+app.use('/images/kinkun', express.static('./images/kinkun'));
 
 // คำสั่งเพื่อใช้ทดสอบดารเข้าใช้งาน web server (หาไม่ใช้ลบทิ้งได้ หรือจะคอมเมนด็ได้ หรือปล่อยไว้ก็ได้)
 app.get('/',(req,res) => {

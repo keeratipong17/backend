@@ -5,13 +5,13 @@ const userController = require('../controllers/user.controller')
 const router = express.Router()
 
 // เพิ่ม
-router.post('/', userController.upload, userController.CreateUser)
+router.post('/', userController.upload.single('userImage'), userController.CreateUser);
 
 // ค้นห่ ตรวจสอบ ดึง ดู
-router.get('/:userEmail/:userPassword', userController.checkLogin)
+router.get('/login', userController.checkLogin);
 
 // แก้ไข
-router.put('/:userId', userController.upload, userController.editUser)
+router.put('/:userId', userController.upload.single('userImage'), userController.editUser);
 
 // ******สำตัญ
 module.exports = router

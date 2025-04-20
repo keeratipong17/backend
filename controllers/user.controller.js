@@ -3,6 +3,10 @@
 const multer = require('multer')
 const path = require('path')
 
+//ใช้ prisma ในการทำงานกับฐานข้อมูล
+const {PrismaClient} = require('@prisma/client');
+const prisma = new PrismaClient();
+
 // ฟังชั่นอัปโหลดไฟล์รูป------------------------------------
 // 1.สร้างที่อยู๋สำหรับเก็บไฟล์ที่อัปโหลด และเปลี่ยนชื่อไฟล์ที่อัปโหลดเพื่อไม่ให้ซ้ำกัน
 const storage = multer.diskStorage({
@@ -37,14 +41,29 @@ exports.upload = multer({
 exports.CreateUser = async (req, res) => {
     try{
         // คำสั่งการทำงานกับฐานข้อมูลผ่าน prisma
+        const result = await prisma.user_tb.create({
+            data: {
+                userFullname: req.body.userFullname,
+                userEmail: req.body.userEmail,
+                userPassword: req.body.userPassword,
+                userImage: req.file ? req.file.path.replace('images\\user\\','') : '',
+            }
+        })
+
+        // เมื่อทำงานเสร็จเรียบร้อยแล้วส่งผลการทำงานกลับไปยัง client
+        res.status(201).json({
+            message: 'InsertOK',
+            info: result
+        })
+
     }catch(err){
-            res.status(500).json({message: `พบปัญหาในการทำงาน ${err/message}`})
+        res.status(500).json({ message: `พบปัญหาในการทำงาน ${err.message}` })
     }
 }
 
 
 //ฟังชั่น login เพื่อตรวจสอบ อีเมลและรหัสผ่าน ในการเข้าสู่ระบบของ user
-exports.CreateUser = async (req, res) => {
+exports.checkLogin = async (req, res) => {
     try{
         // คำสั่งการทำงานกับฐานข้อมูลผ่าน prisma
     }catch(err){
@@ -53,7 +72,7 @@ exports.CreateUser = async (req, res) => {
 }
 
 // ฟังชั่นแก้ไข user
-exports.CreateUser = async (req, res) => {
+exports.editUser = async (req, res) => {
     try{
         // คำสั่งการทำงานกับฐานข้อมูลผ่าน prisma
     }catch(err){
